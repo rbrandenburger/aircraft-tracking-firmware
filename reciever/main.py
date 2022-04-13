@@ -4,7 +4,8 @@
 
 
 import broadcast_data_utilites.csv_reader as csv_reader
-import broadcast_data_utilites.data_decoding.data_decoder as decoder
+import broadcast_data_utilites.data_decoding.broadcast_data_decoder as decoder
+import os
 
 if __name__ == '__main__':
   print('Running App...')
@@ -13,8 +14,9 @@ if __name__ == '__main__':
 
   #TODO: Decode .CSV file and create flight objects
   #SDR outputs broadcast data in CSV files
-  filePath = '.\sample_data\sample_data.csv'
-  encodedBroadcastList = csv_reader.read_data_from_file(filePath)
+  currentPath = os.path.dirname(__file__)
+  dataFilePath = os.path.join(currentPath, ".\\sample_data\\sample_data.csv")
+  encodedBroadcastList = csv_reader.read_data_from_file(dataFilePath)
 
   decodedData = decoder.decode_data(encodedBroadcastList)
 
