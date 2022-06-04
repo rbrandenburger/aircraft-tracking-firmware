@@ -11,6 +11,14 @@
       "program": "${file}",
       "console": "integratedTerminal",
       "justMyCode": true
+    },
+    {
+    "name": "Python: Reciever",
+    "type": "python",
+    "request": "launch",
+    "program": "C:\\Workspace\\Airplane-Tracking-Application\\reciever\\main.py",
+    "console": "integratedTerminal",
+    "justMyCode": true
     }
   ]
 }

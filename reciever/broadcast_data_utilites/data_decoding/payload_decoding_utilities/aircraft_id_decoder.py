@@ -4,37 +4,40 @@ from pathlib import Path
 
 def decode_aircraft_identification(typeCode, binaryString):
   #This has two parts: Wake Vortex and Callsign
-  #TODO: Split into two functions for easier reading
-  #Part 1 - Getting the Wake Vortex
   currentPath = os.path.dirname(__file__)
+  wakeVortex = get_wake_vortex(typeCode, binaryString, currentPath)
+  callsign = get_callsign(binaryString, currentPath)
+  return {'wakeVortex' : wakeVortex, 'callsign': callsign}
+
+def get_wake_vortex(typeCode, binaryString, currentPath):
+  #Wake vortex is determined by two values: typeCode and category
   wakeVortex = "Undefined"
   category = int(binaryString[5:8], 2)
 
-  #Wake vortex is determined by two values: typeCode and category
   if(typeCode == 1):
     wakeVortex = "Reserved"
   elif(category == 0):
     pass
   else:
     #Load table that has typeCode and Category combos
-    wakeTablePath = os.path.join(currentPath, ".\\tables\\wakeVortexEncoding.csv")
+    wakeTablePath = os.path.join(Path(currentPath).parents[0], ".\\lookup_tables\\wakeVortexEncoding.csv")
     wakeTable = csv.reader(open(wakeTablePath, "r"), delimiter=",")
 
     for row in wakeTable:
-      if(row[0] == typeCode and row[1] == category):
-        wakeVortex = row[3]
-    
-    
-  #Part 2 - Getting the callsign
-  binaryString = binaryString[8:]
+      if(int(row[0]) == typeCode and int(row[1]) == category):
+        wakeVortex = row[2]
+  
+  return wakeVortex
 
+def get_callsign(binaryString, currentPath):
+  binaryString = binaryString[8:]
   if(len(binaryString) != 48):
     return "Error: Message too short; does not follow ADSB standards"
   else:
     callsign = ""
 
     #Need to load charTable into memory, as a reader will not reset for the nested loop
-    charTablePath = os.path.join(Path(currentPath).parents[0], ".\\tables\\adsbCharEncoding.csv")
+    charTablePath = os.path.join(Path(currentPath).parents[0], ".\\lookup_tables\\adsbCharEncoding.csv")
     charTableReader = csv.reader(open(charTablePath, "r"), delimiter=",")
     charTableList = list(charTableReader)
 
@@ -48,5 +51,5 @@ def decode_aircraft_identification(typeCode, binaryString):
           break
 
       binaryString = binaryString[6:]
-  
-  return "Message Type: Aircraft Identification\n  -Wake Vortex: {}\n  -Callsign: {}".format(wakeVortex, callsign)
+
+    return callsign

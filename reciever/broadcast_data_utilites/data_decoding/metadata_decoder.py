@@ -1,22 +1,19 @@
-from distutils.command.build import build
-import os
-from turtle import down
-from .. import flight
-import csv
+
 from .. import number_base_converter
-from . import message_payload_decoder
+import os
+import csv
 
-def get_flight_from_binary(binaryString):
+def get_metadata(binaryString):
 
-  downlinkFormat = get_downlink_format(binaryString[:5])
+  metadata = dict()
 
-  transponderCa = get_transponder_capability(binaryString[5:8])
+  metadata['downlinkFormat'] = get_downlink_format(binaryString[:5])
 
-  registration = get_registration(binaryString[8:32])
+  metadata['transponderCa'] = get_transponder_capability(binaryString[5:8])
 
-  payload = get_payload(binaryString[32:88])
+  metadata['registration'] = get_registration(binaryString[8:32])
 
-  print ("Registration Number: {}\nDownlink Format: {}\nTransponderCA: {}\n{}\n".format(registration, downlinkFormat, transponderCa, payload))
+  return metadata
 
 def get_downlink_format(binaryString):
 
@@ -48,7 +45,7 @@ def get_registration(binaryString):
   hexAddress = number_base_converter.convert_binary_to_hex(binaryString)
 
   currentPath = os.path.dirname(__file__)
-  newPath = os.path.join(currentPath, ".\\tables\\registeredAircraftTable.csv")
+  newPath = os.path.join(currentPath, ".\\lookup_tables\\registeredAircraftTable.csv")
   lookupTable = csv.reader(open(newPath, "r"), delimiter=",")
 
   #Looking up flight in CSV flight tables
@@ -58,10 +55,3 @@ def get_registration(binaryString):
       return row[1]
 
   return "Undefined"
-
-def get_payload(binaryString):
-  
-  typeCode = int(binaryString[:5], 2)
-  payloadDecoder = message_payload_decoder.PayloadDecoder
-  payload = payloadDecoder.getPayload(typeCode, binaryString)
-  return payload
