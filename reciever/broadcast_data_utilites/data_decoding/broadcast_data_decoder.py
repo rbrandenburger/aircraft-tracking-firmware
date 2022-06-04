@@ -12,10 +12,12 @@ def decode_data(broadcastDataList):
   convertedBroadcastList = []
   collectedFlights = []
 
+  #Convert raw hex data into binary
   for hexBroadcast in broadcastDataList:
     convertedBroadcastList.append(hexConverter.convert_hex_to_binary(hexBroadcast))
   
+  #Convert the binary broadcast data into flight objects
   for binaryBroadcast in convertedBroadcastList:
     collectedFlights.append(binaryConverter.get_flight_from_binary(binaryBroadcast))
 
-  return 1
+  return collectedFlights

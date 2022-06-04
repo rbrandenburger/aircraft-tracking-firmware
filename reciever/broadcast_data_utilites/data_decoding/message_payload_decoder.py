@@ -1,61 +1,53 @@
 # Author: Remington Brandenbugrer
 # Date: April 2022
-# Description: Contains a class with functions dedicated to decoding the various kinds of payload
-#   a message may contain.
+# Calls correct decoding util based on passed through typecode
 
-import os
-import csv
+from .payload_decoding_utils import aircraft_id_decoder as IdDecoder
 
 class PayloadDecoder:
 
   def __init__(self):
     return
 
-  def decode_aircraft_identification(binaryString, typeCode):
-    #This has two parts: Wake Vortex and Callsign
-    #TODO: Split into two functions for easier reading
-    #Part 1 - Getting the Wake Vortex
-    currentPath = os.path.dirname(__file__)
-    wakeVortex = "Undefined"
-    category = int(binaryString[5:8], 2)
+  def getPayload(typeCode, binaryString):
 
-    #Wake vortex is determined by two values: typeCode and category
-    if(typeCode == 1):
-      wakeVortex = "Reserved"
-    elif(category == 0):
-      pass
-    else:
-      #Load table that has typeCode and Category combos
-      wakeTablePath = os.path.join(currentPath, ".\\tables\\wakeVortexEncoding.csv")
-      wakeTable = csv.reader(open(wakeTablePath, "r"), delimiter=",")
+    payload = ""
 
-      for row in wakeTable:
-        if(row[0] == typeCode and row[1] == category):
-          wakeVortex = row[3]
+    match typeCode:
+
+      case 1 | 2 | 3 | 4:
+        payload = IdDecoder.decode_aircraft_identification(typeCode, binaryString)
+        return payload
       
-      
-    #Part 2 - Getting the callsign
-    binaryString = binaryString[8:]
+      case 5 | 6 | 7 | 8:
+        return "Surface Position"
 
-    if(len(binaryString) != 48):
-      return "Error: Message too short; does not follow ADSB standards"
-    else:
-      callsign = ""
+      case 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18:
+        return "Airborne Position - Baro Altitude"
 
-      #Need to load charTable into memory, as a reader will not reset for the nested loop
-      charTablePath = os.path.join(currentPath, ".\\tables\\adsbCharEncoding.csv")
-      charTableReader = csv.reader(open(charTablePath, "r"), delimiter=",")
-      charTableList = list(charTableReader)
+      case 19:
+        return "Airborne Velocites"
 
-      #Characters are encoded using ASCII but minus two leading bits in the standard 8-bit encoding
-      while (len(binaryString) > 0):
-        encodedChar = binaryString[:6]
+      case 20 | 21 | 22:
+        return "Airborne Position - GNSS Height"
 
-        for row in charTableList:
-          if(encodedChar == row[0]):
-            callsign += row[1]
-            break
+      case 23 | 24 | 25 | 26 | 27:
+        return "Reserved"
 
-        binaryString = binaryString[6:]
-    
-    return "Message Type: Aircraft Identification\n  -Wake Vortex: {}\n  -Callsign: {}".format(wakeVortex, callsign)
+      case 28:
+        return "Aircraft Status"
+
+      case 29:
+        return "Target state and status information"
+
+      case 31:
+        return "Aircraft Operation Status"
+
+      case _:
+        payload = "Undefinedd"
+
+    return payload
+        
+
+  
+

@@ -5,11 +5,11 @@ import csv
 
 def read_data_from_file(filePath):
 
-  capturedBroadcasts = []
+  data_row = []
   with open(filePath) as csvfile:
     
     reader = csv.reader(csvfile)
-    for row in reader:
-      capturedBroadcasts.append(row[0][1:-1].upper())
+    for x in reader:
+      data_row.append(x[0][1:-1].upper())
     
-    return capturedBroadcasts
+    return data_row

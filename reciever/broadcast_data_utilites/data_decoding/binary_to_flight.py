@@ -14,9 +14,9 @@ def get_flight_from_binary(binaryString):
 
   registration = get_registration(binaryString[8:32])
 
-  message = get_message(binaryString[32:88])
+  payload = get_payload(binaryString[32:88])
 
-  print ("Registration Number: {}\nDownlink Format: {}\nTransponderCA: {}\n{}\n".format(registration, downlinkFormat, transponderCa, message))
+  print ("Registration Number: {}\nDownlink Format: {}\nTransponderCA: {}\n{}\n".format(registration, downlinkFormat, transponderCa, payload))
 
 def get_downlink_format(binaryString):
 
@@ -51,49 +51,16 @@ def get_registration(binaryString):
   newPath = os.path.join(currentPath, ".\\tables\\registeredAircraftTable.csv")
   lookupTable = csv.reader(open(newPath, "r"), delimiter=",")
 
-  #TODO: Conver CSV into a database for faster searching.
+  #TODO: Load CSV into memory for faster searching.
   for row in lookupTable:
     if(hexAddress == row[0].upper()):
       return row[1]
 
   return "Undefined"
 
-def get_message(binaryString):
+def get_payload(binaryString):
   
-  payloadDecoder = message_payload_decoder.PayloadDecoder
   typeCode = int(binaryString[:5], 2)
-  
-  match typeCode:
-
-    case 1 | 2 | 3 | 4:
-      #Type codes 1 through 4 are for aircraft identification
-      payload = payloadDecoder.decode_aircraft_identification(binaryString, typeCode)
-      return payload
-
-    case 5 | 6 | 7 | 8:
-      return "Surface Position"
-
-    case 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18:
-      return "Airborne Position - Baro Altitude"
-
-    case 19:
-      return "Airborne Velocites"
-
-    case 20 | 21 | 22:
-      return "Airborne Position - GNSS Height"
-
-    case 23 | 24 | 25 | 26 | 27:
-      return "Reserved"
-
-    case 28:
-      return "Aircraft Status"
-
-    case 29:
-      return "Target state and status information"
-
-    case 31:
-      return "Aircraft Operation Status"
-
-    case _:
-      return "Undefined"
-  
+  payloadDecoder = message_payload_decoder.PayloadDecoder
+  payload = payloadDecoder.getPayload(typeCode, binaryString)
+  return payload

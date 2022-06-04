@@ -10,6 +10,8 @@ import os
 if __name__ == '__main__':
   print('Running App...')
 
+  print('test')
+
   #TODO: Tell radio to listen for airplanes ( 5 min duration )
 
   #TODO: Decode .CSV file and create flight objects
