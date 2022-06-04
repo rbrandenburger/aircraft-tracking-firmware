@@ -3,11 +3,11 @@
 
 #TODO: Change from list input to single item input
 from . import number_base_converter as hexConverter
-from . import binary_to_flight as binaryConverter
+from .data_decoding import binary_to_flight as binaryConverter
 
-from .. import flight
+from . import flight
 
-def decode_data(broadcastDataList):
+def generate_flights(broadcastDataList):
 
   convertedBroadcastList = []
   collectedFlights = []

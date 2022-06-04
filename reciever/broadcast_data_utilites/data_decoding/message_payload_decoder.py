@@ -44,7 +44,7 @@ class PayloadDecoder:
         return "Aircraft Operation Status"
 
       case _:
-        payload = "Undefinedd"
+        payload = "Undefined"
 
     return payload
         

@@ -3,8 +3,8 @@
 # Description: main.py manages the function calling for the collection, processing, and uploading of data.
 
 
-import broadcast_data_utilites.csv_reader as csv_reader
-import broadcast_data_utilites.data_decoding.broadcast_data_decoder as decoder
+import raw_broadcast_loader as rawBroadcastLoader
+from broadcast_data_utilites import flight_object_generator as flightGenerator
 import os
 
 if __name__ == '__main__':
@@ -18,9 +18,9 @@ if __name__ == '__main__':
   #SDR outputs broadcast data in CSV files
   currentPath = os.path.dirname(__file__)
   dataFilePath = os.path.join(currentPath, ".\\sample_data\\sample_data.csv")
-  encodedBroadcastList = csv_reader.read_data_from_file(dataFilePath)
+  encodedBroadcastList = rawBroadcastLoader.read_data_from_file(dataFilePath)
 
-  decodedData = decoder.decode_data(encodedBroadcastList)
+  flights = flightGenerator.generate_flights(encodedBroadcastList)
 
   #TODO: Upload flights to database
   print('App processess completed')

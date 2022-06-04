@@ -3,7 +3,7 @@ import os
 from turtle import down
 from .. import flight
 import csv
-from . import number_base_converter
+from .. import number_base_converter
 from . import message_payload_decoder
 
 def get_flight_from_binary(binaryString):
@@ -51,6 +51,7 @@ def get_registration(binaryString):
   newPath = os.path.join(currentPath, ".\\tables\\registeredAircraftTable.csv")
   lookupTable = csv.reader(open(newPath, "r"), delimiter=",")
 
+  #Looking up flight in CSV flight tables
   #TODO: Load CSV into memory for faster searching.
   for row in lookupTable:
     if(hexAddress == row[0].upper()):
