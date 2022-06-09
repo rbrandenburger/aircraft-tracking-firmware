@@ -14,7 +14,7 @@ if __name__ == '__main__':
 
   #SDR outputs broadcast data in CSV files
   currentPath = os.path.dirname(__file__)
-  dataFilePath = os.path.join(currentPath, ".\\sample_data\\sample_data.csv")
+  dataFilePath = os.path.join(currentPath, ".\\sample_data\\sample_data_oneline.csv")
   rawBroadcasts = rawBroadcastLoader.read_data_from_file(dataFilePath)
 
   #Generate broadcast objects from raw hex data
@@ -23,8 +23,8 @@ if __name__ == '__main__':
     broadcasts.append(broadcast_object_generator.generate_broadcast(x))
 
   #TODO: Delete me
-  for x in broadcasts:
-    print(x)
+  # for x in broadcasts:
+  #   print(x)
 
   #TODO: process list of broadcast objects, and update DB
   print('App processess completed')

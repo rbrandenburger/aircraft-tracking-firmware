@@ -3,6 +3,7 @@
 # Calls correct decoding util based on passed through typecode
 
 from .payload_decoding_utilities import aircraft_id_decoder as IdDecoder
+from .payload_decoding_utilities import airborne_velocity_decoder as velocities_decoder
 
 def get_payload(binaryString):
 
@@ -23,6 +24,8 @@ def get_payload(binaryString):
       return "Airborne Position - Baro Altitude"
 
     case 19:
+      payload['messageType'] = "airborne_velocities"
+      payload.update(velocities_decoder.decode_airborne_velocities(typeCode, binaryString))
       return "Airborne Velocites"
 
     case 20 | 21 | 22:
