@@ -25,11 +25,11 @@ def get_payload(binaryString):
 
     case 19:
       payload['messageType'] = "airborne_velocities"
-      payload.update(velocities_decoder.decode_airborne_velocities(typeCode, binaryString))
-      return "Airborne Velocites"
+      payload.update(velocities_decoder.decode_airborne_velocities(binaryString))
+      return payload
 
     case 20 | 21 | 22:
-      return "Airborne Position - GNSS Height"
+      return "Airborne Position - GNSS Altitude"
 
     case 23 | 24 | 25 | 26 | 27:
       return "Reserved"

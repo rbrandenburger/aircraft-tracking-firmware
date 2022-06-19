@@ -1,24 +1,59 @@
 import math
+import os
+import csv
+from pathlib import Path
 
-#TODO: Add logic to determine which functions to call base on subtype
+def decode_airborne_velocities(binaryString):
 
-def decode_airborne_velocities(typeCode, binaryString):
-
-  subType = binaryString[5:8]
+  subType = int(binaryString[5:8], 2)
   intentChangeFlag = binaryString[8]
-  IFRcapabilityFlag = binaryString[9]
-  NUC = binaryString [10:13] #Navigation Uncertainty Category
+  IfrCapabilityFlag = binaryString[9]
+  nuc = binaryString [10:13] #Navigation Uncertainty Category
   subTypeFields = binaryString[13:35]
   vRateSource = binaryString[35]
   vRateSign = binaryString[36]
-  vRateBinary = binaryString[37:46]
+  vRate = binaryString[37:46]
   altDifSign = binaryString[48]
-  altDifBinary = binaryString[49:56]
+  altDif = binaryString[49:56]
+  airborneVelocities = {
+    'intentChangeFlag' :  intentChangeFlag,
+    'IfrCapabilityFlag' : IfrCapabilityFlag,
+  }
 
-  subType = int(subType, 2)
+  #Get the expected error value
+  airborneVelocities = airborneVelocities | get_figures_of_merit(nuc)
 
-  print (get_air_speed(subType, subTypeFields))
-  return []
+  #Then get vertical velocity
+  airborneVelocities = airborneVelocities | get_vertical_rate(vRateSource, vRateSign, vRate)
+  airborneVelocities = airborneVelocities | get_altitude_difference(altDifSign, altDif)
+  
+  #Then get horizontal velocity. (Could be either ground or air speed)
+  if (subType <= 2):
+    airborneVelocities = airborneVelocities | get_ground_speed(subType, subTypeFields)
+  else:
+    airborneVelocities = airborneVelocities | get_air_speed(subType, subTypeFields)
+
+  return airborneVelocities
+
+def get_figures_of_merit(nuc):
+
+  nuc = int(nuc, 2)
+  hFOM = vFOM = "NUC value is not defined"
+  figuresOfMerit = {'horizontalError' : hFOM, 'verticalError': vFOM} 
+  
+  if(nuc <= 4):
+    currentPath = os.path.dirname(__file__)
+    nucTablePath = os.path.join(Path(currentPath).parents[0], ".\\lookup_tables\\navigationUncertainty.csv")
+    nucTable = csv.reader(open(nucTablePath, "r"), delimiter=",")
+    next(nucTable) #<- Skip table header
+    
+    for row in nucTable:
+      if(int(row[0]) == nuc):
+        figuresOfMerit['horizontalError'] = row[1]
+        figuresOfMerit['verticalError'] = row[2]
+  
+  return figuresOfMerit
+  
 
 def get_vertical_rate(vRateSource, vRateSign, vRateBinary):
   
@@ -60,7 +95,6 @@ def get_ground_speed(subType, subTypeFields):
   velocityBinaryNS = subTypeFields[12:22]
   velocityDecimalNS = int(velocityBinaryNS, 2)
   speedFactor = 1
-  
   if(subType == 2):
     speedFactor = 4
 
@@ -98,6 +132,7 @@ def get_air_speed(subType, subTypeFields):
 
   return airSpeed
 
+#Speed formula used for horizontal speed functions
 def speed_function(sign, velocity):
   if(velocity == 0):
     return "No information available"
