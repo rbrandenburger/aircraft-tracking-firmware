@@ -9,6 +9,7 @@ def read_data_from_file(filePath):
   with open(filePath) as csvfile:
     
     reader = csv.reader(csvfile)
+    #TODO: Bug fix removal of bad characters
     for x in reader:
       data_row.append(x[0][1:-1].upper())
     

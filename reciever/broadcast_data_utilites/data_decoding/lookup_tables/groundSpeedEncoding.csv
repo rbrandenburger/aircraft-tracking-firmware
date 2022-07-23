@@ -1,0 +1,8 @@
+﻿max_movement_val,min_movement_val,state,min_speed,step
+1,0,Stopped,0,0
+8,2,Moving,0.125,0.125
+12,9,Moving,1,0.25
+38,13,Moving,2,0.5
+93,39,Moving,15,1
+108,94,Moving,70,2
+123,109,Moving,100,5

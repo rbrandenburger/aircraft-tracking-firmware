@@ -2,8 +2,10 @@
 # Date: April 2022
 # Calls correct decoding util based on passed through typecode
 
-from .payload_decoding_utilities import aircraft_id_decoder as IdDecoder
-from .payload_decoding_utilities import airborne_velocity_decoder as velocities_decoder
+from .payload_decoding_utilities import aircraft_id_decoder
+from .payload_decoding_utilities import airborne_velocity_decoder as velocities_decoder#TODO: Change name?
+from .payload_decoding_utilities import airborne_position_decoder
+from .payload_decoding_utilities import surface_position_decoder
 
 def get_payload(binaryString):
 
@@ -14,22 +16,24 @@ def get_payload(binaryString):
 
     case 1 | 2 | 3 | 4:
       payload['messageType'] = "aircraft_identification"
-      payload.update(IdDecoder.decode_aircraft_identification(typeCode, binaryString))
+      payload.update(aircraft_id_decoder.decode_aircraft_identification(typeCode, binaryString))
       return payload
     
     case 5 | 6 | 7 | 8:
-      return "Surface Position"
+      payload['messageType'] = "surface_position"
+      payload.update(surface_position_decoder.decode_surface_postion(binaryString))
+      return payload
 
-    case 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18:
-      return "Airborne Position - Baro Altitude"
+    case 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 20 | 21 | 22:
+      payload['messageType'] = "airborne_position"
+      payload['typeCode'] = typeCode
+      payload.update(airborne_position_decoder.decode_airborne_postition(typeCode, binaryString))
+      return payload
 
     case 19:
       payload['messageType'] = "airborne_velocities"
       payload.update(velocities_decoder.decode_airborne_velocities(binaryString))
       return payload
-
-    case 20 | 21 | 22:
-      return "Airborne Position - GNSS Altitude"
 
     case 23 | 24 | 25 | 26 | 27:
       return "Reserved"
