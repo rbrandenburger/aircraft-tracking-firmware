@@ -1,19 +1,13 @@
-# Author: Remington Brandenbugrer
-# Date: April 2022
-# Calls correct decoding util based on passed through typecode
-
 from .payload_decoding_utilities import aircraft_id_decoder
-from .payload_decoding_utilities import airborne_velocity_decoder as velocities_decoder#TODO: Change name?
+from .payload_decoding_utilities import airborne_velocity_decoder
 from .payload_decoding_utilities import airborne_position_decoder
 from .payload_decoding_utilities import surface_position_decoder
 
 def get_payload(binaryString):
-
   typeCode = int(binaryString[:5], 2)
   payload = {}
 
   match typeCode:
-
     case 1 | 2 | 3 | 4:
       payload['messageType'] = "aircraft_identification"
       payload.update(aircraft_id_decoder.decode_aircraft_identification(typeCode, binaryString))
@@ -32,7 +26,7 @@ def get_payload(binaryString):
 
     case 19:
       payload['messageType'] = "airborne_velocities"
-      payload.update(velocities_decoder.decode_airborne_velocities(binaryString))
+      payload.update(airborne_velocity_decoder.decode_airborne_velocities(binaryString))
       return payload
 
     case 23 | 24 | 25 | 26 | 27:

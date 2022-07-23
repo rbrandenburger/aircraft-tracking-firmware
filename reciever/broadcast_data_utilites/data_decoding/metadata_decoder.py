@@ -1,31 +1,21 @@
-
 from .. import number_base_converter
-import os
-import csv
 
-def get_metadata(binaryString):
-
+def get_metadata(binaryString, aircraftLookupTable):
   metadata = dict()
-
   metadata['downlinkFormat'] = get_downlink_format(binaryString[:5])
-
   metadata['transponderCa'] = get_transponder_capability(binaryString[5:8])
-
-  metadata['registration'] = get_registration(binaryString[8:32])
+  metadata['registration'] = get_registration(binaryString[8:32], aircraftLookupTable)
 
   return metadata
 
 def get_downlink_format(binaryString):
-
   downlinkFormat = int(binaryString, 2)
   return downlinkFormat
 
 def get_transponder_capability(binaryString):
-
   capability = int(binaryString, 2)
 
   match capability:
-
     case 0:
       return "Level 1"
     case 1 | 2 | 3:
@@ -41,16 +31,10 @@ def get_transponder_capability(binaryString):
     case _:
       return "Error: Undefined"
 
-def get_registration(binaryString):
+def get_registration(binaryString, aircraftLookupTable):
   hexAddress = number_base_converter.convert_binary_to_hex(binaryString)
 
-  currentPath = os.path.dirname(__file__)
-  newPath = os.path.join(currentPath, ".\\lookup_tables\\registeredAircraftTable.csv")
-  lookupTable = csv.reader(open(newPath, "r"), delimiter=",")
-
-  #Looking up flight in CSV flight tables
-  #TODO: Load CSV into memory for faster searching.
-  for row in lookupTable:
+  for row in aircraftLookupTable:
     if(hexAddress == row[0].upper()):
       return row[1]
 

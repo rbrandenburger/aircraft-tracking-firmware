@@ -1,16 +1,12 @@
-# Author: Remington Brandenbugrer
-# Date: April 2022
-
 import csv
+import re
 
 def read_data_from_file(filePath):
-
   data_row = []
   with open(filePath) as csvfile:
     
     reader = csv.reader(csvfile)
-    #TODO: Bug fix removal of bad characters
     for x in reader:
-      data_row.append(x[0][1:-1].upper())
+      data_row.append(re.sub(r'[\W_]','',x[0].upper())) #Using re to remove non alphanumeric chars
     
     return data_row

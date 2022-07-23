@@ -1,4 +1,3 @@
-
 class Broadcast:
   def __init__(self, downlinkFormat, transponderCapability, registrationNum, payload):
     self.downlinkFormat = downlinkFormat

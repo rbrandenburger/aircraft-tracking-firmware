@@ -1,8 +1,3 @@
-# Author: Remington Brandenburger
-# Date: April 2022
-
-import binascii
-
 hexToBinaryTable = {
   '0' : '0000',
   '1' : '0001',
@@ -23,7 +18,6 @@ hexToBinaryTable = {
 }
 
 def convert_hex_to_binary(hexString):
-
   binaryString = ""
   for c in hexString:
     bits = hexToBinaryTable[c]
@@ -32,7 +26,6 @@ def convert_hex_to_binary(hexString):
   return binaryString
 
 def convert_binary_to_hex(binaryString):
-  
   hexList = list(hexToBinaryTable.keys())
   binaryList = list(hexToBinaryTable.values())
   hexString = ""

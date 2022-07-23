@@ -1,51 +1,52 @@
 import math
-import os
-import csv
-from pathlib import Path
+from ... import table_loader
 
 def decode_airborne_velocities(binaryString):
-
   subType = int(binaryString[5:8], 2)
   intentChangeFlag = binaryString[8]
   IfrCapabilityFlag = binaryString[9]
   nuc = binaryString [10:13] #Navigation Uncertainty Category
   subTypeFields = binaryString[13:35]
-  vRateSource = binaryString[35]
-  vRateSign = binaryString[36]
-  vRate = binaryString[37:46]
+  verticalVelocitySource = binaryString[35]
+  verticalVelocitySign = binaryString[36]
+  encodedVerticalVelocity = binaryString[37:46]
   altDifSign = binaryString[48]
-  altDif = binaryString[49:56]
+  encodedAltDif = binaryString[49:56]
+  
+  figuresOfMerit = decode_figures_of_merit(nuc)
+  verticalVelocity = decode_vertical_velocity(verticalVelocitySign, encodedVerticalVelocity)
+  altDif = decode_altitude_difference(altDifSign, encodedAltDif)
+  
+  if(int(verticalVelocitySource)):
+    verticalVelocitySource = "Barometric"
+  else:
+    verticalVelocitySource = "GNSS"
+
+  if (subType <= 2):
+    horizontalVelocity = decode_ground_speed(subType, subTypeFields)
+  else:
+    horizontalVelocity = decode_air_speed(subType, subTypeFields)
+
   airborneVelocities = {
     'intentChangeFlag' :  intentChangeFlag,
     'IfrCapabilityFlag' : IfrCapabilityFlag,
+    'figuresOfMerit' : figuresOfMerit,
+    'verticalVelocitySource' : verticalVelocitySource,
+    'verticalVelocity' : verticalVelocity,
+    'altDif' : altDif,
+    'horizontalVelocity' : horizontalVelocity
   }
-
-  #Get the expected error value
-  airborneVelocities = airborneVelocities | get_figures_of_merit(nuc)
-
-  #Then get vertical velocity
-  airborneVelocities = airborneVelocities | get_vertical_rate(vRateSource, vRateSign, vRate)
-  airborneVelocities = airborneVelocities | get_altitude_difference(altDifSign, altDif)
-  
-  #Then get horizontal velocity. (Could be either ground or air speed)
-  if (subType <= 2):
-    airborneVelocities = airborneVelocities | get_ground_speed(subType, subTypeFields)
-  else:
-    airborneVelocities = airborneVelocities | get_air_speed(subType, subTypeFields)
 
   return airborneVelocities
 
-def get_figures_of_merit(nuc):
-
+def decode_figures_of_merit(nuc):
   nuc = int(nuc, 2)
   hFOM = vFOM = "NUC value is not defined"
   figuresOfMerit = {'horizontalError' : hFOM, 'verticalError': vFOM} 
   
   if(nuc <= 4):
-    currentPath = os.path.dirname(__file__)
-    nucTablePath = os.path.join(Path(currentPath).parents[0], ".\\lookup_tables\\navigationUncertainty.csv")
-    nucTable = csv.reader(open(nucTablePath, "r"), delimiter=",")
-    next(nucTable) #<- Skip table header
+    nucTable = table_loader.get_table("navigationUncertainty.csv")
+    nucTable.pop(0) #<- Removes table header
     
     for row in nucTable:
       if(int(row[0]) == nuc):
@@ -55,38 +56,28 @@ def get_figures_of_merit(nuc):
   return figuresOfMerit
   
 
-def get_vertical_rate(vRateSource, vRateSign, vRateBinary):
-  
-  verticleRate = dict()
-  vRateDecimal = int(vRateBinary, 2)
+def decode_vertical_velocity(verticalRateSign, encodedVerticalRate):
+  verticalRateDecimal = int(encodedVerticalRate, 2)
 
-  if(vRateSource == '0'):
-    verticleRate['vRateSource'] = "GNSS"
+  if(verticalRateSign == '0'):
+    verticleVelocity = 64 * (verticalRateDecimal + -1)
   else:
-    verticleRate['vRateSource'] = "Barometric"
+    verticleVelocity = -( 64 * (verticalRateDecimal + -1))
 
-  if(vRateSign == '0'):
-    verticleRate['verticleSpeed'] = 64 * (vRateDecimal + -1)
-  else:
-    verticleRate['verticleSpeed'] = -( 64 * (vRateDecimal + -1))
+  return verticleVelocity
 
-  return verticleRate
-
-def get_altitude_difference(altDifSign, altDifBinary):
-
-  altitudeDiff = dict()
+def decode_altitude_difference(altDifSign, altDifBinary):
   altDifDecimal = int(altDifBinary, 2)
   if(altDifDecimal == 0):
-    altitudeDiff['altitudeDifference'] = "No altitude difference information available"
+    altDif = "No altitude difference information available"
   elif(altDifSign == '0'):
-    altitudeDiff['altitudeDifference'] = (altDifDecimal + -1) * 25
+    altDif = str((altDifDecimal + -1) * 25)
   else:
-    altitudeDiff['altitudeDifference'] = -(altDifDecimal + -1) * 25
+    altDif = str(-(altDifDecimal + -1) * 25)
 
-  return altitudeDiff
+  return altDif
 
-def get_ground_speed(subType, subTypeFields):
-
+def decode_ground_speed(subType, subTypeFields):
   groundSpeed = dict()
   directionEW = subTypeFields[0]
   velocityBinaryEW = subTypeFields[1:11]
@@ -98,17 +89,16 @@ def get_ground_speed(subType, subTypeFields):
   if(subType == 2):
     speedFactor = 4
 
-  groundSpeed['velocityX'] = speedFactor * speed_function(directionEW, velocityDecimalEW)
-  groundSpeed['velocityY'] = speedFactor * speed_function(directionNS, velocityDecimalNS)
+  velocityX = speedFactor * speed_function(directionEW, velocityDecimalEW)
+  velocityY = speedFactor * speed_function(directionNS, velocityDecimalNS)
 
-  groundSpeed['finalVelocity'] = math.sqrt(groundSpeed['velocityX'] ** 2 + groundSpeed['velocityY'] ** 2)
-  groundSpeed['trackAngle'] = math.atan2(groundSpeed['velocityX'], groundSpeed['velocityY']) * (360/(2*math.pi))
+  groundSpeed['speed'] = round(math.sqrt(velocityX ** 2 + velocityY** 2), 1)
+  groundSpeed['trackAngle'] = round(math.atan2(velocityX, velocityY) * (360/(2*math.pi)), 1)
   groundSpeed['trackAngle'] %= 360 # <- In case of a negative value
 
   return groundSpeed
 
-def get_air_speed(subType, subTypeFields):
-  
+def decode_air_speed(subType, subTypeFields):
   airSpeed = dict()
   magneticHeadingStatus = subTypeFields[0]
   magneticHeadingBinary = subTypeFields[1:11]

@@ -1,9 +1,6 @@
-import os
-import csv
-from pathlib import Path
+from ... import table_loader
 
 def decode_surface_postion(binaryString):
-
   encodedMovement = binaryString[5:12]
   trackStatus = binaryString[12]
   track = binaryString[13:20]
@@ -13,12 +10,21 @@ def decode_surface_postion(binaryString):
   encodedLongitude = binaryString[39:56]
 
   movement = decode_movment(encodedMovement)
+  trackAngle = decode_track_angle(trackStatus, track)
   
-  return {'foo' : 'bar'}
+  surfacePosition = {
+    "movement" : movement,
+    "trackAngle" : trackAngle,
+    "timeBit" : time,
+    "cprFormat" : cprFormat,
+    "encodedLatitude" : encodedLatitude,
+    "encodedLongitude" : encodedLongitude
+  }
+
+  return surfacePosition
 
 
 def decode_movment(encodedMovement):
-
   decodedMovement = ""
   decimalMovement = int(encodedMovement, 2)
 
@@ -30,7 +36,7 @@ def decode_movment(encodedMovement):
   elif(decimalMovement >= 124):
     decodedMovement = {
       "state" : "Moving",
-      "speed" : ">175kt"
+      "speed" : ">175"
     }
   elif(decimalMovement == 0):
     decodedMovement = {
@@ -38,16 +44,13 @@ def decode_movment(encodedMovement):
       "speed" : "-1"
       }
   else:
-    decodedMovement = calculate_speed()
+    decodedMovement = calculate_speed(decimalMovement)
   
   return decodedMovement
 
 def calculate_speed(decimalMovement):
-
-  currentPath = os.path.dirname(__file__)
-  groundSpeedEncodingPath = os.path.join(Path(currentPath).parents[0], ".\\lookup_tables\\groundSpeedEncoding.csv")
-  groundSpeedEncodingTable = csv.reader(open(groundSpeedEncodingPath, "r"), delimiter=",")
-  next(groundSpeedEncodingTable) #<- Skips the table header
+  groundSpeedEncodingTable = table_loader.get_table("groundSpeedEncoding.csv")
+  groundSpeedEncodingTable.pop(0) #<- removes the table header
 
   groundSpeed = {
     "state" : "error",
@@ -56,10 +59,20 @@ def calculate_speed(decimalMovement):
 
   for row in groundSpeedEncodingTable:
     if (decimalMovement < int(row[0])):
-      speed = int(row[3]) + (decimalMovement - row[1]) * row[4]
+      speed = int(row[3]) + (decimalMovement - int(row[1])) * int(row[4])
       groundSpeed = {
         "state" : row[2],
         "speed" : str(speed)
       }
+      return groundSpeed
 
   return groundSpeed
+
+def decode_track_angle(trackStatus, track):
+  if(int(trackStatus)):
+    decimalTrack = int(track, 2)
+    trackAngle = str(round((360 * decimalTrack) / 128, 1))
+  else:
+    trackAngle = "invalid"
+
+  return trackAngle

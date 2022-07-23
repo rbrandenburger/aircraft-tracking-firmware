@@ -1,6 +1,4 @@
-
 def decode_airborne_postition(typeCode, binaryString):
-
   encodedSurveillanceStatus = binaryString[5:7]
   singleAntennaFlag =  binaryString[7]
   encodedAltitude = binaryString[8:20]
@@ -25,7 +23,6 @@ def decode_airborne_postition(typeCode, binaryString):
   return airbornePosition
 
 def decode_altitude(typeCode, encodedAltitude):
-  
   #Check for all 0 bits
   if(int(encodedAltitude, 2) == 0):
     return "No altitude information available"
@@ -38,7 +35,6 @@ def decode_altitude(typeCode, encodedAltitude):
   return altitude
 
 def decode_barometric_altitude(encodedAltitude):
-  
   qBit = encodedAltitude[7]
   encodedAltitude = encodedAltitude[:7] + encodedAltitude[8:]
 
@@ -53,12 +49,10 @@ def decode_barometric_altitude(encodedAltitude):
   return str(altitude) + " ft"
 
 def decode_gnss_altitude(encodedAltitude):
-
   altitude = int(encodedAltitude, 2)
   return str(altitude) + " m"
 
 def decode_gray_to_binary(gray):
-  
   binary = gray[0]
   gray = gray[1:]
 
@@ -73,10 +67,7 @@ def decode_gray_to_binary(gray):
   return binary
 
 def get_surveillance_status(encodedSurveillanceStatus):
-
-  surveillanceStatus = ""
   match encodedSurveillanceStatus:
-
     case '00':
       surveillanceStatus = "No Condition"
     case '01':
