@@ -46,11 +46,11 @@ def decode_barometric_altitude(encodedAltitude):
     altitude = int(decode_gray_to_binary(encodedAltitude), 2)
     altitude = 100 * altitude
 
-  return str(altitude) + " ft"
+  return str(altitude)
 
 def decode_gnss_altitude(encodedAltitude):
   altitude = int(encodedAltitude, 2)
-  return str(altitude) + " m"
+  return str(altitude)
 
 def decode_gray_to_binary(gray):
   binary = gray[0]

@@ -1,0 +1,188 @@
+
+             Message: 8DA08DD0EA000890015C004D0AD1 
+        ICAO address: A08DD0 
+      downlinkFormat: 17
+            Protocol: Mode-S Extended Squitter (ADS-B)
+                Type: Target state and status information
+             Subtype: 1
+   Selected altitude: None feet
+     Altitude source: MCP/FCU
+Barometric pressure setting: 1018.4 millibars
+    Selected Heading: None °
+
+             Message: 8DA08DD099105903B01804DBF9A6
+        ICAO address: A08DD0
+      downlinkFormat: 17
+            Protocol: Mode-S Extended Squitter (ADS-B)
+                Type: Airborne velocity
+               speed: 92 knots
+          trackAngle: 72.35 degrees
+    verticalVelocity: 320 feet/minute
+verticalVelocitySource: Ground speed
+
+             Message: 8DA08DD0590DE332AFD4BC598660
+        ICAO address: A08DD0
+      downlinkFormat: 17
+            Protocol: Mode-S Extended Squitter (ADS-B)
+                Type: Airborne position (with barometric altitude)
+           cprFormat: 0
+        CPR Latitude: 0.7994918823242188
+       CPR Longitude: 0.915496826171875
+            altitude: 1750 feet
+
+
+             Message: 8DA3DB5E990D9C0A7804921BE9F4
+        ICAO address: A3DB5E
+      downlinkFormat: 17
+            Protocol: Mode-S Extended Squitter (ADS-B)
+                Type: Airborne velocity
+               speed: 419 knots
+          trackAngle: 281.28 degrees
+    verticalVelocity: 0 feet/minute
+verticalVelocitySource: Ground speed
+
+
+             Message: 8DA593A0F8210002004AB82ADF80
+        ICAO address: A593A0
+      downlinkFormat: 17
+            Protocol: Mode-S Extended Squitter (ADS-B)
+
+             Message: 8DA593A0581386B4B25B7FB3070D
+        ICAO address: A593A0
+      downlinkFormat: 17
+            Protocol: Mode-S Extended Squitter (ADS-B)
+                Type: Airborne position (with barometric altitude)
+           cprFormat: 1
+        CPR Latitude: 0.6764602661132812
+       CPR Longitude: 0.17870330810546875
+            altitude: 2800 feet
+
+             Message: 8DA593A0EA05F890015C080DF81D
+        ICAO address: A593A0
+      downlinkFormat: 17
+            Protocol: Mode-S Extended Squitter (ADS-B)
+                Type: Target state and status information
+             Subtype: 1
+   Selected altitude: 3008 feet
+     Altitude source: MCP/FCU
+Barometric pressure setting: 1018.4 millibars
+    Selected Heading: None °
+
+
+             Message: 8DA593A0990C8703280C02676544
+        ICAO address: A593A0
+      downlinkFormat: 17
+            Protocol: Mode-S Extended Squitter (ADS-B)
+                Type: Airborne velocity
+               speed: 136 knots
+          trackAngle: 280.15 degrees
+    verticalVelocity: -128 feet/minute
+verticalVelocitySource: Ground speed
+
+
+             Message: 8DA08DD099105A03980405A24EDC
+        ICAO address: A08DD0
+      downlinkFormat: 17
+            Protocol: Mode-S Extended Squitter (ADS-B)
+                Type: Airborne velocity
+               speed: 93 knots
+          trackAngle: 73.12 degrees
+    verticalVelocity: 0 feet/minute
+verticalVelocitySource: Ground speed
+
+
+             Message: 8DA08DD0590DE6BEAC5E48DE4E35
+        ICAO address: A08DD0
+      downlinkFormat: 17
+            Protocol: Mode-S Extended Squitter (ADS-B)
+                Type: Airborne position (with barometric altitude)
+           cprFormat: 1
+        CPR Latitude: 0.6862030029296875
+       CPR Longitude: 0.18414306640625
+            altitude: 1750 feet
+
+             Message: 8DA08DD0E1100800000000FFD123
+        ICAO address: A08DD0
+      downlinkFormat: 17
+            Protocol: Mode-S Extended Squitter (ADS-B)
+
+             Message: 8D4840D6242CC371C32CE0576098
+        ICAO address: 4840D6
+      downlinkFormat: 17
+            Protocol: Mode-S Extended Squitter (ADS-B)
+                Type: aircraft_identification
+           callsign:: KLM1023_
+
+
+             Message: 8D485020994409940838175B284F
+        ICAO address: 485020
+      downlinkFormat: 17
+            Protocol: Mode-S Extended Squitter (ADS-B)
+                Type: Airborne velocity
+               speed: 159 knots
+          trackAngle: 182.88 degrees
+    verticalVelocity: -832 feet/minute
+verticalVelocitySource: Ground speed
+
+             Message: 8DA05F219B06B6AF189400CBC33F
+        ICAO address: A05F21
+      downlinkFormat: 17
+            Protocol: Mode-S Extended Squitter (ADS-B)
+                Type: Airborne velocity
+               speed: 375 knots
+          trackAngle: 243.98 degrees
+    verticalVelocity: -2304 feet/minute
+verticalVelocitySource: True airspeed
+
+             Message: 8C4841753AAB238733C8CD4020B1
+        ICAO address: 484175
+      downlinkFormat: 17
+            Protocol: Mode-S Extended Squitter (ADS-B)
+                Type: Surface position
+           cprFormat: 0
+        CPR Latitude: 0.8820266723632812
+       CPR Longitude: 0.8921890258789062
+            movement: 18 knots
+          trackAngle: 140.6 degrees
+
+             Message: 8C4841753A8A35323FAEBDAC702D
+        ICAO address: 484175
+      downlinkFormat: 17
+            Protocol: Mode-S Extended Squitter (ADS-B)
+                Type: Surface position
+           cprFormat: 1
+        CPR Latitude: 0.29906463623046875
+       CPR Longitude: 0.8412857055664062
+            movement: 16 knots
+          trackAngle: 98.4 degrees
+
+             Message: 8DA05F219B06B6AF189400CBC33F8DA05F219B06B6AF189400CBC33F
+        ICAO address: A05F21
+      downlinkFormat: 17
+            Protocol: Mode-S Extended Squitter (ADS-B)
+                Type: Airborne velocity
+               speed: 375 knots
+          trackAngle: 243.98 degrees
+    verticalVelocity: -2304 feet/minute
+verticalVelocitySource: True airspeed
+
+             Message: 8D40621D58C382D690C8AC2863A7
+        ICAO address: 40621D
+      downlinkFormat: 17
+            Protocol: Mode-S Extended Squitter (ADS-B)
+                Type: Airborne position (with barometric altitude)
+           cprFormat: 0
+        CPR Latitude: 0.70953369140625
+       CPR Longitude: 0.391937255859375
+            altitude: 38000 feet
+
+
+             Message: 8D40621D58C386435CC412692AD6
+        ICAO address: 40621D
+      downlinkFormat: 17
+            Protocol: Mode-S Extended Squitter (ADS-B)
+                Type: Airborne position (with barometric altitude)
+           cprFormat: 1
+        CPR Latitude: 0.5657806396484375
+       CPR Longitude: 0.3829498291015625
+            altitude: 38000 feet

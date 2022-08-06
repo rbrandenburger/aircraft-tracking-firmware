@@ -126,7 +126,7 @@ def decode_air_speed(subType, subTypeFields):
 def speed_function(sign, velocity):
   if(velocity == 0):
     return "No information available"
-  if(sign):
+  if(int(sign)):
     return -(velocity - 1)
   else:
     return velocity - 1

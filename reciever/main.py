@@ -3,7 +3,7 @@
 import sys
 sys.dont_write_bytecode = True
 import os
-import raw_broadcast_loader as rawBroadcastLoader
+import raw_broadcast_loader
 from broadcast_data_utilites import broadcast_object_generator
 from broadcast_data_utilites import table_loader
 
@@ -16,7 +16,7 @@ if __name__ == '__main__':
   #SDR outputs broadcast data in CSV files
   currentPath = os.path.dirname(__file__)
   dataFilePath = os.path.join(currentPath, ".\\sample_data\\sample_data.csv")
-  rawBroadcasts = rawBroadcastLoader.read_data_from_file(dataFilePath)
+  rawBroadcasts = raw_broadcast_loader.read_data_from_file(dataFilePath)
   aircraftLookupTable = table_loader.get_table("registeredAircraftTable.csv")
 
   #Generate broadcast objects from raw hex data
