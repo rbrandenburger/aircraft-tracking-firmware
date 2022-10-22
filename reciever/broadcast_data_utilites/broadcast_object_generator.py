@@ -1,5 +1,5 @@
 from . import number_base_converter
-from .data_decoding import master_decoder
+from .raw_data_decoding import master_decoder
 import logger
 
 def generate_broadcast(rawBroadcast, aircraftLookupTable):
