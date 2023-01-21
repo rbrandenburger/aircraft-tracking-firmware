@@ -40,4 +40,4 @@ def _get_registration(binaryString, aircraftLookupTable):
     if(hexAddress == row[0].upper()):
       return row[1]
 
-  return "Undefined"
+  return "Undefined - Not in Lookup Table"

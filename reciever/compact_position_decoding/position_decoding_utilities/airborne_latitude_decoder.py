@@ -17,7 +17,7 @@ def decode_latitude(cprEven, cprOdd):
   oddZoneNum = utils.get_longitude_zone_number(latOdd)
 
   if(evenZoneNum != oddZoneNum):
-    raise ValueError("Zone numbers are not the same, likely cause by aircraft crossing over zones between broadcasts")
+    raise ValueError("Zone numbers are not the same, likely caused by aircraft crossing over zones between broadcasts")
 
   # Technically should have logic to pick the most recent, but ADSB packets do not include a timestamp.
   return latOdd

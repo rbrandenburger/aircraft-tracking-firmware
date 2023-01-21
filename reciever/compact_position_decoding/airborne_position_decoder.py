@@ -58,6 +58,8 @@ def _get_airborne_position(broadcasts):
     latitude = _get_latitude(evenBroadcast, oddBroadcast)
     longitude = _get_longitude(evenBroadcast, oddBroadcast, latitude)
   except ValueError as e:
+    msg = "\nBroadcast even:\n{}\nBroadcast odd:\n{}".format(evenBroadcast, oddBroadcast)
+    e.args = (e.args[0] + msg,) + e.args[1:] # This just appends msg to the ValueError message
     logger.log_error(e)
     return
 

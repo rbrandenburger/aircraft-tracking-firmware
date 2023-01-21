@@ -5,7 +5,7 @@ import os
 def log_error(message):
   _verify_directory()
   fileName = "./logs/" + str(datetime.date.today()) + ".log"
-  logging.basicConfig(filename=fileName, filemode='a')
+  logging.basicConfig(filename=fileName, filemode='a', format='\n%(levelname)s %(asctime)s\n%(message)s')
   logging.error(str(message))
 
 def log_warning(message):
