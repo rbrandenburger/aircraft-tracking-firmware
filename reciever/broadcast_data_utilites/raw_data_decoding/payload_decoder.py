@@ -30,22 +30,22 @@ def get_payload(binaryString):
       return payload
 
     case 23 | 24 | 25 | 26 | 27:
-      return "Reserved"
+      payload['messageType'] = "reserved"
+      return payload
 
     case 28:
-      return "Aircraft Status"
+      payload['messageType'] = "aircraft_status"
+      return payload
 
     case 29:
-      return "Target state and status information"
+      payload['messageType'] = "target_state_and_status_info"
+      return payload
 
     case 31:
-      return "Aircraft Operation Status"
+      payload['messageType'] = "aircraft_operation_status"
+      return payload
 
     case _:
-      payload = "Undefined"
+      payload['messageType'] = "Undefined"
 
   return payload
-      
-
-
-

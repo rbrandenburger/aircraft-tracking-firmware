@@ -2,17 +2,19 @@ from .. import number_base_converter
 
 def get_metadata(binaryString, aircraftLookupTable):
   metadata = dict()
-  metadata['downlinkFormat'] = get_downlink_format(binaryString[:5])
-  metadata['transponderCa'] = get_transponder_capability(binaryString[5:8])
-  metadata['registration'] = get_registration(binaryString[8:32], aircraftLookupTable)
+  metadata['downlinkFormat'] = _get_downlink_format(binaryString[:5])
+  metadata['transponderCa'] = _get_transponder_capability(binaryString[5:8])
+  metadata['registration'] = _get_registration(binaryString[8:32], aircraftLookupTable)
 
   return metadata
 
-def get_downlink_format(binaryString):
+# Private methods
+
+def _get_downlink_format(binaryString):
   downlinkFormat = int(binaryString, 2)
   return downlinkFormat
 
-def get_transponder_capability(binaryString):
+def _get_transponder_capability(binaryString):
   capability = int(binaryString, 2)
 
   match capability:
@@ -31,7 +33,7 @@ def get_transponder_capability(binaryString):
     case _:
       return "Error: Undefined"
 
-def get_registration(binaryString, aircraftLookupTable):
+def _get_registration(binaryString, aircraftLookupTable):
   hexAddress = number_base_converter.convert_binary_to_hex(binaryString)
 
   for row in aircraftLookupTable:

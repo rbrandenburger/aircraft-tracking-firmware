@@ -1,6 +1,5 @@
 from . import number_base_converter
 from .raw_data_decoding import master_decoder
-import logger
 
 def generate_broadcast(rawBroadcast, aircraftLookupTable):
   #Convert raw hex data into binary

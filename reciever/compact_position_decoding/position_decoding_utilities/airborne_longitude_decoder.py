@@ -1,17 +1,16 @@
-import common_functions as utils
+from . import common_functions as utils
 import math
 
-def get_longitude(cprEven, cprOdd, latitude):
-
+def decode_longitude(cprEven, cprOdd, latitude):
   zoneNum = utils.get_longitude_zone_number(latitude)
 
   lonCprEven = int(cprEven, 2) / (2**17)
   lonCprOdd = int(cprOdd, 2) / (2**17)
 
-  lon_index = get_longitude_index(lonCprEven, lonCprOdd, zoneNum)
+  lon_index = _get_longitude_index(lonCprEven, lonCprOdd, zoneNum)
 
-  numLonZoneEven = math.max(zoneNum, 1)
-  numLonZoneOdd = math.max(zoneNum - 1, 1) #TODO: Check if this is a bug
+  numLonZoneEven = max(zoneNum, 1)
+  numLonZoneOdd = max(zoneNum - 1, 1)
 
   lonZoneSizeEven = 360 / numLonZoneEven
   lonZoneSizeOdd = 360 / numLonZoneOdd
@@ -19,17 +18,18 @@ def get_longitude(cprEven, cprOdd, latitude):
   lonEven = lonZoneSizeEven * (utils.modulo_function(lon_index, numLonZoneEven) + lonCprEven)
   lonOdd = lonZoneSizeOdd * (utils.modulo_function(lon_index, numLonZoneOdd) + lonCprOdd)
 
-  #TODO: Implement timestamp decision
-
-  longitude = lonEven
+  # Technically should have logic to pick the most recent, but ADSB packets do not include a timestamp.
+  longitude = lonOdd
 
   if(longitude >= 180 ):
-    longitude -= 180
+    longitude -= 360
 
   return longitude
 
-def get_longitude_index(lonCprEven, lonCprOdd, zoneNum):
+# Private methods
+
+def _get_longitude_index(lonCprEven, lonCprOdd, zoneNum):
   x = lonCprEven * (zoneNum - 1)
-  y = lonCprOdd * zoneNum + 0.5
-  lon_index = math.floor(x - y)
+  y = lonCprOdd * (zoneNum)
+  lon_index = math.floor(x - y + 0.5)
   return lon_index

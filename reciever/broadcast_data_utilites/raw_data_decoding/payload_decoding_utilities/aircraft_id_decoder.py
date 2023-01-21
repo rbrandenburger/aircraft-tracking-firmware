@@ -4,8 +4,8 @@ def decode_aircraft_identification(typeCode, binaryString):
   category = binaryString[5:8]
   encodedCallsign = binaryString[8:]
   
-  wakeVortex = decode_wake_vortex(typeCode, category)
-  callsign = decode_callsign(encodedCallsign)
+  wakeVortex = _decode_wake_vortex(typeCode, category)
+  callsign = _decode_callsign(encodedCallsign)
 
   aircraftID = {
     'wakeVortex' : wakeVortex, 
@@ -14,7 +14,9 @@ def decode_aircraft_identification(typeCode, binaryString):
 
   return aircraftID
 
-def decode_wake_vortex(typeCode, category):
+# Private methods
+
+def _decode_wake_vortex(typeCode, category):
   #Wake vortex is determined by two values: typeCode and category
   wakeVortex = "Undefined"
   if(typeCode == 1):
@@ -30,7 +32,7 @@ def decode_wake_vortex(typeCode, category):
   
   return wakeVortex
 
-def decode_callsign(encodedCallsign):
+def _decode_callsign(encodedCallsign):
   if(len(encodedCallsign) != 48):
     return "Error: Message too short; does not follow ADSB standards"
   else:

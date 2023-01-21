@@ -1,17 +1,17 @@
 # Author: Remington Brandenburger
 # Description: main.py manages the function calling for the collection, processing, and uploading of data.
-import sys
+import sys, os
 sys.dont_write_bytecode = True
-import os
+
 import raw_broadcast_loader
-from broadcast_data_utilites import broadcast_object_generator
-from broadcast_data_utilites import table_loader
+from broadcast_data_utilites import broadcast_object_generator, table_loader
+from compact_position_decoding import airborne_position_decoder
 
 
 if __name__ == '__main__':
   print('Running App...')
 
-  #TODO: Tell radio to listen for airplanes ( 5 min duration )
+  #TODO: Tell radio to listen for airplanes ( ? min duration )
 
   #SDR outputs broadcast data in CSV files
   currentPath = os.path.dirname(__file__)
@@ -25,12 +25,14 @@ if __name__ == '__main__':
     broadcast = broadcast_object_generator.generate_broadcast(x, aircraftLookupTable)
     if (broadcast != None):
       broadcasts.append(broadcast)
+
+  #TODO: Surface positions
+  broadcasts = airborne_position_decoder.decode_positions(broadcasts)
     
 
   #TODO: Delete me
   for x in broadcasts:
     print(x)
-
-  #TODO: Check for positional broadcasts and pair up even and odd frames and get coordinates
+  
   #TODO: process list of broadcast objects, and update DB
   print('App processess completed')

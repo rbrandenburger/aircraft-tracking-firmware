@@ -37,5 +37,3 @@ def convert_binary_to_hex(binaryString):
     binaryString = binaryString[4:]
 
   return hexString
-  
-  

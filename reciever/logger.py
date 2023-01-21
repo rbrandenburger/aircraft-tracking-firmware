@@ -1,14 +1,23 @@
 import logging
 import datetime
+import os
 
 def log_error(message):
-  fileName = "logs/" + str(datetime.date.today()) + ".log"
-  timestamp = datetime.datetime.now().strftime("\nLocal System Time: %Y-%m-%dT%H:%M:%S:%f")
+  _verify_directory()
+  fileName = "./logs/" + str(datetime.date.today()) + ".log"
   logging.basicConfig(filename=fileName, filemode='a')
-  logging.error(timestamp + str(message))
+  logging.error(str(message))
 
 def log_warning(message):
-  fileName = "logs/" + str(datetime.date.today()) + ".log"
-  timestamp = datetime.datetime.now().strftime("\nLocal System Time: %Y-%m-%dT%H:%M:%S:%f")
-  logging.basicConfig(filename=fileName, filemode='a')
-  logging.warning(timestamp + str(message))
+  _verify_directory()
+  fileName = "./logs/" + str(datetime.date.today()) + ".log"
+  logging.basicConfig(filename=fileName, filemode='a', format='\n%(levelname)s %(asctime)s\n%(message)s')
+  logging.warning(str(message))
+
+# Private methods
+
+def _verify_directory():
+  path = "./logs/"
+  if not os.path.exists(path):
+    os.makedirs(path)
+  return

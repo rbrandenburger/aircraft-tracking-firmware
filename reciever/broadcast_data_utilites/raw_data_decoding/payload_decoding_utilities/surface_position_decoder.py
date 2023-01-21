@@ -9,8 +9,8 @@ def decode_surface_postion(binaryString):
   encodedLatitude = binaryString[22:39]
   encodedLongitude = binaryString[39:56]
 
-  movement = decode_movment(encodedMovement)
-  trackAngle = decode_track_angle(trackStatus, track)
+  movement = _decode_movment(encodedMovement)
+  trackAngle = _decode_track_angle(trackStatus, track)
   
   surfacePosition = {
     "movement" : movement,
@@ -23,8 +23,9 @@ def decode_surface_postion(binaryString):
 
   return surfacePosition
 
+# Private methods
 
-def decode_movment(encodedMovement):
+def _decode_movment(encodedMovement):
   decodedMovement = ""
   decimalMovement = int(encodedMovement, 2)
 
@@ -44,11 +45,11 @@ def decode_movment(encodedMovement):
       "speed" : "-1"
       }
   else:
-    decodedMovement = calculate_speed(decimalMovement)
+    decodedMovement = _calculate_speed(decimalMovement)
   
   return decodedMovement
 
-def calculate_speed(decimalMovement):
+def _calculate_speed(decimalMovement):
   groundSpeedEncodingTable = table_loader.get_table("groundSpeedEncoding.csv")
   groundSpeedEncodingTable.pop(0) #<- removes the table header
 
@@ -68,7 +69,7 @@ def calculate_speed(decimalMovement):
 
   return groundSpeed
 
-def decode_track_angle(trackStatus, track):
+def _decode_track_angle(trackStatus, track):
   if(int(trackStatus)):
     decimalTrack = int(track, 2)
     trackAngle = str(round((360 * decimalTrack) / 128, 1))

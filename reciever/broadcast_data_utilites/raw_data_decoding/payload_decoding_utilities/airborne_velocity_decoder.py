@@ -13,9 +13,9 @@ def decode_airborne_velocities(binaryString):
   altDifSign = binaryString[48]
   encodedAltDif = binaryString[49:56]
   
-  figuresOfMerit = decode_figures_of_merit(nuc)
-  verticalVelocity = decode_vertical_velocity(verticalVelocitySign, encodedVerticalVelocity)
-  altDif = decode_altitude_difference(altDifSign, encodedAltDif)
+  figuresOfMerit = _decode_figures_of_merit(nuc)
+  verticalVelocity = _decode_vertical_velocity(verticalVelocitySign, encodedVerticalVelocity)
+  altDif = _decode_altitude_difference(altDifSign, encodedAltDif)
   
   if(int(verticalVelocitySource)):
     verticalVelocitySource = "Barometric"
@@ -23,9 +23,9 @@ def decode_airborne_velocities(binaryString):
     verticalVelocitySource = "GNSS"
 
   if (subType <= 2):
-    horizontalVelocity = decode_ground_speed(subType, subTypeFields)
+    horizontalVelocity = _decode_ground_speed(subType, subTypeFields)
   else:
-    horizontalVelocity = decode_air_speed(subType, subTypeFields)
+    horizontalVelocity = _decode_air_speed(subType, subTypeFields)
 
   airborneVelocities = {
     'intentChangeFlag' :  intentChangeFlag,
@@ -39,7 +39,9 @@ def decode_airborne_velocities(binaryString):
 
   return airborneVelocities
 
-def decode_figures_of_merit(nuc):
+# Private methods
+
+def _decode_figures_of_merit(nuc):
   nuc = int(nuc, 2)
   hFOM = vFOM = "NUC value is not defined"
   figuresOfMerit = {'horizontalError' : hFOM, 'verticalError': vFOM} 
@@ -56,7 +58,7 @@ def decode_figures_of_merit(nuc):
   return figuresOfMerit
   
 
-def decode_vertical_velocity(verticalRateSign, encodedVerticalRate):
+def _decode_vertical_velocity(verticalRateSign, encodedVerticalRate):
   verticalRateDecimal = int(encodedVerticalRate, 2)
 
   if(verticalRateSign == '0'):
@@ -66,7 +68,7 @@ def decode_vertical_velocity(verticalRateSign, encodedVerticalRate):
 
   return verticleVelocity
 
-def decode_altitude_difference(altDifSign, altDifBinary):
+def _decode_altitude_difference(altDifSign, altDifBinary):
   altDifDecimal = int(altDifBinary, 2)
   if(altDifDecimal == 0):
     altDif = "No altitude difference information available"
@@ -77,7 +79,7 @@ def decode_altitude_difference(altDifSign, altDifBinary):
 
   return altDif
 
-def decode_ground_speed(subType, subTypeFields):
+def _decode_ground_speed(subType, subTypeFields):
   groundSpeed = dict()
   directionEW = subTypeFields[0]
   velocityBinaryEW = subTypeFields[1:11]
@@ -89,8 +91,8 @@ def decode_ground_speed(subType, subTypeFields):
   if(subType == 2):
     speedFactor = 4
 
-  velocityX = speedFactor * speed_function(directionEW, velocityDecimalEW)
-  velocityY = speedFactor * speed_function(directionNS, velocityDecimalNS)
+  velocityX = speedFactor * _speed_function(directionEW, velocityDecimalEW)
+  velocityY = speedFactor * _speed_function(directionNS, velocityDecimalNS)
 
   groundSpeed['speed'] = round(math.sqrt(velocityX ** 2 + velocityY** 2), 1)
   groundSpeed['trackAngle'] = round(math.atan2(velocityX, velocityY) * (360/(2*math.pi)), 1)
@@ -98,7 +100,7 @@ def decode_ground_speed(subType, subTypeFields):
 
   return groundSpeed
 
-def decode_air_speed(subType, subTypeFields):
+def _decode_air_speed(subType, subTypeFields):
   airSpeed = dict()
   magneticHeadingStatus = subTypeFields[0]
   magneticHeadingBinary = subTypeFields[1:11]
@@ -116,19 +118,17 @@ def decode_air_speed(subType, subTypeFields):
     airSpeed['magneticHeading'] = "Magnetic heading not available"
 
   if(airSpeedType):
-    airSpeed['trueAirSpeed'] = speedFactor * speed_function(0, airSpeedDecimal)
+    airSpeed['trueAirSpeed'] = speedFactor * _speed_function(0, airSpeedDecimal)
   else:
-    airSpeed['indicatedAirSpeed'] = speedFactor * speed_function(0, airSpeedDecimal)
+    airSpeed['indicatedAirSpeed'] = speedFactor * _speed_function(0, airSpeedDecimal)
 
   return airSpeed
 
 #Speed formula used for horizontal speed functions
-def speed_function(sign, velocity):
+def _speed_function(sign, velocity):
   if(velocity == 0):
     return "No information available"
   if(int(sign)):
     return -(velocity - 1)
   else:
     return velocity - 1
-
-  
