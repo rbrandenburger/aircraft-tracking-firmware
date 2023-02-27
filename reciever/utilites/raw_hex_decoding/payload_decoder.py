@@ -5,7 +5,7 @@ from .payload_decoding_utilities import surface_position_decoder
 
 def get_payload(binaryString):
   typeCode = int(binaryString[:5], 2)
-  payload = {}
+  payload = {'typeCode' : typeCode}
 
   match typeCode:
     case 1 | 2 | 3 | 4:

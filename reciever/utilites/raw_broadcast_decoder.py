@@ -1,7 +1,7 @@
-from . import number_base_converter
-from .raw_data_decoding import master_decoder
+from .general import number_base_converter
+from .raw_hex_decoding import master_decoder
 
-def generate_broadcast(rawBroadcast, aircraftLookupTable):
+def generate_broadcast_from_hex(rawBroadcast, aircraftLookupTable):
   #Convert raw hex data into binary
   binaryBroadcast = number_base_converter.convert_hex_to_binary(rawBroadcast)
   if(len(binaryBroadcast) < 112):

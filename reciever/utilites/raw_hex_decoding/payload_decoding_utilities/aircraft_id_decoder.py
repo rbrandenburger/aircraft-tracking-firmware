@@ -1,4 +1,4 @@
-from ... import table_loader
+from utilites.general import table_loader
 
 def decode_aircraft_identification(typeCode, binaryString):
   category = binaryString[5:8]

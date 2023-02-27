@@ -1,5 +1,5 @@
 import math
-from ... import table_loader
+from utilites.general import table_loader
 
 def decode_airborne_velocities(binaryString):
   subType = int(binaryString[5:8], 2)

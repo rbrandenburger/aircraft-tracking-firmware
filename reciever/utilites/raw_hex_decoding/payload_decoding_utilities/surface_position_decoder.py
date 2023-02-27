@@ -1,4 +1,4 @@
-from ... import table_loader
+from utilites.general import table_loader
 
 def decode_surface_postion(binaryString):
   encodedMovement = binaryString[5:12]

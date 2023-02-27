@@ -1,4 +1,4 @@
-from .. import number_base_converter
+from utilites.general import number_base_converter
 
 def get_metadata(binaryString, aircraftLookupTable):
   metadata = dict()
