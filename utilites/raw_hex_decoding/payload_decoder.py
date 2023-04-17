@@ -9,23 +9,23 @@ def get_payload(binaryString):
 
   match typeCode:
     case 1 | 2 | 3 | 4:
-      payload['messageType'] = "aircraft_identification"
+      payload['messageType'] = "aircraftIdentification"
       payload.update(aircraft_id_decoder.decode_aircraft_identification(typeCode, binaryString))
       return payload
     
     case 5 | 6 | 7 | 8:
-      payload['messageType'] = "surface_position"
+      payload['messageType'] = "surfacePosition"
       payload.update(surface_position_decoder.decode_surface_postion(binaryString))
       return payload
 
     case 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 20 | 21 | 22:
-      payload['messageType'] = "airborne_position"
+      payload['messageType'] = "airbornePosition"
       payload['typeCode'] = typeCode
       payload.update(airborne_position_decoder.decode_airborne_postition(typeCode, binaryString))
       return payload
 
     case 19:
-      payload['messageType'] = "airborne_velocities"
+      payload['messageType'] = "airborneVelocities"
       payload.update(airborne_velocity_decoder.decode_airborne_velocities(binaryString))
       return payload
 
@@ -34,15 +34,15 @@ def get_payload(binaryString):
       return payload
 
     case 28:
-      payload['messageType'] = "aircraft_status"
+      payload['messageType'] = "aircraftStatus"
       return payload
 
     case 29:
-      payload['messageType'] = "target_state_and_status_info"
+      payload['messageType'] = "targetStateAndStatusInfo"
       return payload
 
     case 31:
-      payload['messageType'] = "aircraft_operation_status"
+      payload['messageType'] = "aircraftOperationStatus"
       return payload
 
     case _:

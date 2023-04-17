@@ -6,4 +6,4 @@ class Broadcast:
     self.payload = payload
 
   def __str__(self):
-    return "Registration Number: {}\nDownlink Format: {}\nTransponderCA: {}\n{}\n".format(self.registrationNum, self.downlinkFormat, self.transponderCapability, self.payload)
+    return "Registration Number: {}\nDownlink Format: {}\nTransponderCA: {}\nPayload: {}\n".format(self.registrationNum, self.downlinkFormat, self.transponderCapability, self.payload)

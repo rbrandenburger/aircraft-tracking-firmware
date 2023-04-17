@@ -1,4 +1,11 @@
+# Python cache files
 *.pyc
+
+# VSCode debugging util stuff 
 .vscode/
+
+# Logs
 *.log
-reciever/test_key_generator.py
+
+# Env variables
+.env
