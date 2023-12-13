@@ -3,7 +3,7 @@
 import sys, os
 sys.dont_write_bytecode = True
 
-from utilites import raw_broadcast_loader, raw_broadcast_decoder, coordinate_decoder
+from utilites import raw_broadcast_loader, raw_broadcast_decoder, coordinate_decoder, api_client
 from utilites.general import table_loader
 
 if __name__ == '__main__':
@@ -27,9 +27,11 @@ if __name__ == '__main__':
   # Positional broadcasts require additional decoding
   broadcasts = coordinate_decoder.decode_positions(broadcasts)
 
-  #TODO: Delete me
-  for x in broadcasts:
-    print(x)
+  #TODO: POST broadcasts to app API
+  # for broadcast in broadcasts:
+  #   print(broadcast)
+    
+  api_client.post(broadcasts)
   
-  #TODO: process list of broadcast objects, and update DB
+  #TODO: Loop instead of terminate
   print('App processess completed')

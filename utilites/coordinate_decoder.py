@@ -101,10 +101,10 @@ def _pair_positional_broadcasts(broadcasts, typeCodes):
   for broadcast in broadcasts:
     if broadcast.payload['typeCode'] not in typeCodes:
       continue
-    elif broadcast.registrationNum in pairs:
-      pairs[broadcast.registrationNum].append(broadcast)
+    elif broadcast.registrationNumber in pairs:
+      pairs[broadcast.registrationNumber].append(broadcast)
     else:
-      pairs[broadcast.registrationNum] = [broadcast]
+      pairs[broadcast.registrationNumber] = [broadcast]
 
   # Verify that there are 2 broadcasts to calculate position
   for aircraft in pairs.copy():
