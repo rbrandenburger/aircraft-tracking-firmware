@@ -1,0 +1,11 @@
+[flake8]
+
+ignore =
+    # Line length
+    E501,
+
+    # Assign a lambda expression
+    E731
+
+    # Unused variable
+    F841
