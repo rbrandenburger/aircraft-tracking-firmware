@@ -1,40 +1,14 @@
-from utilites.general import table_loader
-from utilites import (
-    raw_broadcast_loader,
-    raw_broadcast_decoder,
-    coordinate_decoder,
-    api_client
-)
+import multiprocessing
+from listener import Listener
+from processor import Processor
 
-import os
+if __name__ == "__main__":
+    multiprocessing.set_start_method("spawn")
 
-if __name__ == '__main__':
-    print('Running App...')
+    broadcast_queue = multiprocessing.SimpleQueue()
 
-    # TODO: Tell radio to listen for airplanes ( ? min duration )
+    listen_process = multiprocessing.Process(target=Listener.listen, args=[broadcast_queue])
+    listen_process.start()
 
-    # Radio outputs broadcast data in CSV files
-    currentPath = os.path.dirname(__file__)
-    dataFilePath = os.path.join(currentPath, ".\\sample_data\\sample_data.csv")
-    rawBroadcasts = raw_broadcast_loader.read_data_from_file(dataFilePath)
-    aircraftLookupTable = table_loader.get_table("registeredAircraftTable.csv")
-
-    # Decode and generate broadcast objects from raw hex data
-    broadcasts = []
-    for x in rawBroadcasts:
-        broadcast = raw_broadcast_decoder.generate_broadcast_from_hex(x, aircraftLookupTable)
-
-        if (broadcast is not None):
-            broadcasts.append(broadcast)
-
-    # Positional broadcasts require additional decoding
-    broadcasts = coordinate_decoder.decode_positions(broadcasts)
-
-    # TODO: POST broadcasts to app API
-    # for broadcast in broadcasts:
-    #   print(broadcast)
-
-    api_client.post(broadcasts)
-
-    # TODO: Loop instead of terminate
-    print('App processess completed')
+    processor_process = multiprocessing.Process(target=Processor.process_broadcasts, args=[broadcast_queue])
+    processor_process.start()

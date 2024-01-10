@@ -8,33 +8,18 @@ POSITIONAL_TYPECODES = SURFACE_POSITION_TYPECODES + AIRBORNE_POSITION_TYPECODES
 LOCAL_COORDINATES = geocoder.ip('me').latlng
 
 
-def decode_positions(broadcasts):
-    positionalBroadcasts, otherBroadcasts = _seperate_positional_broadcasts(broadcasts)
-
-    encodedAirPositionPairs = _pair_positional_broadcasts(positionalBroadcasts, AIRBORNE_POSITION_TYPECODES)
-    encodedSurfacePositionPairs = _pair_positional_broadcasts(positionalBroadcasts, SURFACE_POSITION_TYPECODES)
+def decode_positions(positionalBroadcasts):
+    encodedAirPositionPairs, unpaired_air_broadcasts = _pair_positional_broadcasts(positionalBroadcasts, AIRBORNE_POSITION_TYPECODES)
+    encodedSurfacePositionPairs, unpaired_surface_broadcasts = _pair_positional_broadcasts(positionalBroadcasts, SURFACE_POSITION_TYPECODES)
 
     decodedAirPositionBroadcasts = _decode_pairs(encodedAirPositionPairs, isSurface=False)
     decodedSurfacePositionBroadcasts = _decode_pairs(encodedSurfacePositionPairs, isSurface=True)
 
-    decodedBroadcasts = decodedAirPositionBroadcasts + decodedSurfacePositionBroadcasts + otherBroadcasts
-    return decodedBroadcasts
+    decodedBroadcasts = decodedAirPositionBroadcasts + decodedSurfacePositionBroadcasts
+    return decodedBroadcasts, unpaired_air_broadcasts + unpaired_surface_broadcasts
 
 
 # Private methods
-
-
-def _seperate_positional_broadcasts(broadcasts):
-    positionalBroadcasts = []
-    otherBroadcasts = []
-
-    for broadcast in broadcasts:
-        if broadcast.payload['typeCode'] in POSITIONAL_TYPECODES:
-            positionalBroadcasts.append(broadcast)
-        else:
-            otherBroadcasts.append(broadcast)
-
-    return positionalBroadcasts, otherBroadcasts
 
 
 def _decode_pairs(encodedPairs, isSurface=False):
@@ -107,6 +92,7 @@ def _get_longitude(evenBroadcast, oddBroadcast, latitude, isSurface):
 
 def _pair_positional_broadcasts(broadcasts, typeCodes):
     pairs = {}
+    unpaired_broadcasts = []
 
     for broadcast in broadcasts:
         if broadcast.payload['typeCode'] not in typeCodes:
@@ -119,9 +105,10 @@ def _pair_positional_broadcasts(broadcasts, typeCodes):
     # Verify that there are 2 broadcasts to calculate position
     for aircraft in pairs.copy():
         if len(pairs[aircraft]) != 2:
-            del pairs[aircraft]  # TODO add a cache for the next batch of broadcast
+            unpaired_broadcasts.append(pairs[aircraft][0])
+            del pairs[aircraft]
 
-    return pairs
+    return pairs, unpaired_broadcasts
 
 
 def _correct_for_relative_position(broadcast):
