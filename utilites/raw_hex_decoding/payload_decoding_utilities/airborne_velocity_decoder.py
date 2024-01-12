@@ -2,6 +2,10 @@ import math
 from utilites.general import table_loader
 
 
+class AirborneVelocityDecoderError(Exception):
+    pass
+
+
 def decode_airborne_velocities(binaryString):
     subType = int(binaryString[5:8], 2)
     intentChangeFlag = binaryString[8]
@@ -95,12 +99,15 @@ def _decode_ground_speed(subType, subTypeFields):
     if (subType == 2):
         speedFactor = 4
 
-    velocityX = speedFactor * _speed_function(directionEW, velocityDecimalEW)
-    velocityY = speedFactor * _speed_function(directionNS, velocityDecimalNS)
+    try:
+        velocityX = speedFactor * _speed_function(directionEW, velocityDecimalEW)
+        velocityY = speedFactor * _speed_function(directionNS, velocityDecimalNS)
 
-    groundSpeed['speed'] = round(math.sqrt(velocityX ** 2 + velocityY ** 2), 1)
-    groundSpeed['trackAngle'] = round(math.atan2(velocityX, velocityY) * (360 / (2 * math.pi)), 1)
-    groundSpeed['trackAngle'] %= 360  # <- In case of a negative value
+        groundSpeed['speed'] = round(math.sqrt(velocityX ** 2 + velocityY ** 2), 1)
+        groundSpeed['trackAngle'] = round(math.atan2(velocityX, velocityY) * (360 / (2 * math.pi)), 1)
+        groundSpeed['trackAngle'] %= 360  # <- In case of a negative value
+    except AirborneVelocityDecoderError:
+        return None
 
     return groundSpeed
 
@@ -134,7 +141,7 @@ def _decode_air_speed(subType, subTypeFields):
 # Speed formula used for horizontal speed functions
 def _speed_function(sign, velocity):
     if (velocity == 0):
-        return "No information available"
+        raise AirborneVelocityDecoderError("No information available")
     if (int(sign)):
         return -(velocity - 1)
     else:

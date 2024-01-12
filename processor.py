@@ -14,7 +14,7 @@ class Processor:
         incompletePositionalBroadcasts = []
 
         while True:
-            hexBroadcast = hexBroadcastQueue.get()
+            hexBroadcast, timestamp = hexBroadcastQueue.get()
             hexBroadcast = re.sub(r'[^0-9a-fA-F]', '', hexBroadcast.upper())
             broadcast = hex_broadcast_decoder.generate_broadcast_from_hex(hexBroadcast, aircraftLookupTable)
 
@@ -22,8 +22,10 @@ class Processor:
             if (broadcast is None):
                 continue
 
+            broadcast.timestamp = timestamp
+
             # If it was a positional packet, add to positional array and run positional decoder
-            elif broadcast.payload['typeCode'] in coordinate_decoder.POSITIONAL_TYPECODES:
+            if broadcast.payload['typeCode'] in coordinate_decoder.POSITIONAL_TYPECODES:
                 incompletePositionalBroadcasts.append(broadcast)
                 broadcasts, incompletePositionalBroadcasts = coordinate_decoder.decode_positions(incompletePositionalBroadcasts)
 
@@ -31,9 +33,11 @@ class Processor:
                     continue
 
                 for broadcast in broadcasts:
+                    print("Lat: {}    Lon: {}".format(broadcast.payload["latitude"], broadcast.payload["longitude"]))
                     print(broadcast)
                     # add broadcast to api queue
 
             else:
                 # add broadcast to api queue
                 print(broadcast)
+                continue

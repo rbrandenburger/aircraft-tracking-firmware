@@ -1,5 +1,6 @@
 import math
 from . import shared_functions as utils
+from .. import coordinate_decoder
 
 AIR_ZONE_SIZE_EVEN = 6.0
 AIR_ZONE_SIZE_ODD = 6.10169491525
@@ -31,7 +32,7 @@ def _calculate(cprEven, cprOdd, zoneSizeEven, zoneSizeOdd):
     oddZoneNum = utils.get_longitude_zone_number(latOdd)
 
     if (evenZoneNum != oddZoneNum):
-        raise ValueError("Zone numbers are not the same, likely caused by aircraft crossing over zones between broadcasts")
+        raise coordinate_decoder.DecodingError("Zone numbers are not the same, likely caused by aircraft crossing over zones between broadcasts")
 
     # Technically should have logic to pick the most recent, but ADSB packets do not include a timestamp.
     return latOdd
