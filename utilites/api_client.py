@@ -7,5 +7,6 @@ AUTH_HEADER = {"x-api-key": ENV["API_KEY"]}
 
 def post(broadcasts):
     for broadcast in broadcasts:
-        httpx.post(ENV["API_URL"] + "/broadcasts/create", json=broadcast.serialize(), headers=AUTH_HEADER)
+        print(broadcast)
+        # httpx.post(ENV["API_URL"] + "/broadcasts/create", json=broadcast.serialize(), headers=AUTH_HEADER)
     return

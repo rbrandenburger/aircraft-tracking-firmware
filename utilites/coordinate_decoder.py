@@ -100,16 +100,18 @@ def _pair_positional_broadcasts(broadcasts, typeCodes):
     unpaired_broadcasts = []
 
     for broadcast in broadcasts:
+        icao24 = broadcast.icao24
+
         if broadcast.payload['typeCode'] not in typeCodes:
             continue
-        elif broadcast.registrationNumber in pairs:
+        elif icao24 in pairs:
             # We must have both CPR formats, otherwise just replace the old broadcast
-            if pairs[broadcast.registrationNumber][0].payload["cprFormat"] != broadcast.payload["cprFormat"]:
-                pairs[broadcast.registrationNumber].append(broadcast)
+            if pairs[icao24][0].payload["cprFormat"] != broadcast.payload["cprFormat"]:
+                pairs[icao24].append(broadcast)
             else:
-                pairs[broadcast.registrationNumber][0] = broadcast
+                pairs[icao24][0] = broadcast
         else:
-            pairs[broadcast.registrationNumber] = [broadcast]
+            pairs[icao24] = [broadcast]
 
     for aircraft in pairs.copy():
         if len(pairs[aircraft]) != 2:

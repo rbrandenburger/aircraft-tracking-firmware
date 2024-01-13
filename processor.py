@@ -8,10 +8,10 @@ import re
 
 
 class Processor:
-    def process_broadcasts(hexBroadcastQueue):
-        aircraftLookupTable = table_loader.get_table("registeredAircraftTable.csv")
-
+    def process_broadcasts(hexBroadcastQueue, processedBroadcastQueue):
         incompletePositionalBroadcasts = []
+
+        aircraftLookupTable = table_loader.get_table("registeredAircraftTable.csv")
 
         while True:
             hexBroadcast, timestamp = hexBroadcastQueue.get()
@@ -33,11 +33,7 @@ class Processor:
                     continue
 
                 for broadcast in broadcasts:
-                    print("Lat: {}    Lon: {}".format(broadcast.payload["latitude"], broadcast.payload["longitude"]))
-                    print(broadcast)
-                    # add broadcast to api queue
+                    processedBroadcastQueue.put(broadcast)
 
             else:
-                # add broadcast to api queue
-                print(broadcast)
-                continue
+                processedBroadcastQueue.put(broadcast)

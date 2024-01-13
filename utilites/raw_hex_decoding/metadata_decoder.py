@@ -5,7 +5,8 @@ def get_metadata(binaryString, aircraftLookupTable):
     metadata = dict()
     metadata['downlinkFormat'] = _get_downlink_format(binaryString[:5])
     metadata['transponderCa'] = _get_transponder_capability(binaryString[5:8])
-    metadata['registration'] = _get_registration(binaryString[8:32], aircraftLookupTable)
+    metadata['icao24'] = _get_icao_24(binaryString[8:32])
+    metadata['aircraftDetails'] = _get_aircraft_details(metadata['icao24'], aircraftLookupTable)
 
     return metadata
 
@@ -38,11 +39,13 @@ def _get_transponder_capability(binaryString):
             return "Error: Undefined"
 
 
-def _get_registration(binaryString, aircraftLookupTable):
-    hexAddress = number_base_converter.convert_binary_to_hex(binaryString)
+def _get_icao_24(binaryString):
+    return number_base_converter.convert_binary_to_hex(binaryString)
 
+
+def _get_aircraft_details(icao24, aircraftLookupTable):
     for row in aircraftLookupTable:
-        if (hexAddress == row[0].upper()):
-            return row[1]
+        if (icao24 == row[0].upper()):
+            return {"registrationNumber": row[1], "manufacturer": row[3], "model": row[4]}
 
-    return "Undefined - Not in Lookup Table"
+    return None
